@@ -38,6 +38,8 @@ func main() {
 		http.ServeFile(w, r, "./assets/index.html")
 	})
 
+	router.Handle("/assets/*", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
+
 	// Serve math game files from /math/
 	fs := http.StripPrefix("/math/", http.FileServer(http.Dir("./math")))
 	router.Handle("/math/*", fs)
