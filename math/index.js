@@ -1,20 +1,28 @@
 const display = document.querySelector('#display');
 const optionBts = document.querySelector('#optionBts');
+const message = document.querySelector('#messageBoard');
+const scoreBoard = document.querySelector('#score');
 const operations = ["+", "-", "*"];
 const options = [];
 let problem;
 let solution;
+let score = 0;
+let totalSeconds = 60;
+let remainingSeconds = totalSeconds;
+let intervalId = null;
 
 const newProblem = () => {
     let numOne = Math.floor(Math.random() * 10) + 1;
     let numTwo = Math.floor(Math.random() * 10) + 1;
     let op = operations[Math.floor(Math.random() * 3)];
     problem = `${numOne} ${op} ${numTwo}`;
+    console.log(`Operator chosen: ${op}`);
     return problem;
 } 
 
 const solutionGenerator = () => {
     solution = eval(problem);
+    //solution = parseFloat(eval(problem).toFixed(2)); //to 2 decimal places
     console.log(`Solution is ${solution}`)//print solution
     return solution;
 }
@@ -30,14 +38,46 @@ const optionsGenerator = () => {
     for(let opt of options){
         let btn = document.createElement('button');
         btn.innerText = opt;
-        optionBts.appendChild(btn);
+        btn.addEventListener("click", ()=>{
+            if(opt === solution){
+                score++;
+                scoreBoard.innerText = score;
+                message.innerText = "Correct!"
+            }else{
+                message.innerText = "False"
+            }
+        })
         
+        optionBts.appendChild(btn);
     }
+}
 
+const formatTime = (seconds) => {
+    let mins = Math.floor(seconds / 60);
+    let secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+const updateDisplay = () => {
+    document.getElementById('timer').innerText = formatTime(remainingSeconds);
+}
+
+const startTimer = () => {
+    if (intervalId === null && remainingSeconds > 0) {
+        intervalId = setInterval(() => {
+            remainingSeconds--;
+            updateDisplay();
+            if (remainingSeconds === 0) {
+            clearInterval(intervalId);
+            intervalId = null;
+            }
+        }, 1000);
+    }
 }
 
 display.value = newProblem();
 solutionGenerator();
 optionsGenerator();
+startTimer();
 
 
