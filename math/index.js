@@ -22,12 +22,17 @@ const newProblem = () => {
 
 const solutionGenerator = () => {
     solution = eval(problem);
-    //solution = parseFloat(eval(problem).toFixed(2)); //to 2 decimal places
-    console.log(`Solution is ${solution}`)//print solution
     return solution;
 }
 
+const removeOptions = () => {
+   let previousOptions = optionBts.querySelectorAll('button');
+   previousOptions.forEach(btn => btn.remove());
+}
+
 const optionsGenerator = () => {
+    options.length = 0; // Clear old options
+
     options[0] = solution; 
     let randomNumOne = Math.floor(Math.random() * 100);
     let randomNumTwo = Math.floor(Math.random() * 100);
@@ -42,9 +47,17 @@ const optionsGenerator = () => {
             if(opt === solution){
                 score++;
                 scoreBoard.innerText = score;
-                message.innerText = "Correct!"
+                message.innerText = "Correct!";
+                display.value = newProblem();
+                removeOptions();
+                solutionGenerator();
+                optionsGenerator();
             }else{
-                message.innerText = "False"
+                message.innerText = "False";
+                display.value = newProblem();
+                removeOptions();
+                solutionGenerator();
+                optionsGenerator();
             }
         })
         
@@ -74,6 +87,8 @@ const startTimer = () => {
         }, 1000);
     }
 }
+
+
 
 display.value = newProblem();
 solutionGenerator();
