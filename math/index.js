@@ -2,6 +2,7 @@ const display = document.querySelector('#display');
 const optionBts = document.querySelector('#optionBts');
 const message = document.querySelector('#messageBoard');
 const scoreBoard = document.querySelector('#score');
+const start = document.querySelector('#start');
 const operations = ["+", "-", "*"];
 const options = [];
 let problem;
@@ -88,11 +89,14 @@ const startTimer = () => {
     }
 }
 
+const startGame = () => {
+    start.addEventListener("click", () => {
+        display.value = newProblem();
+        solutionGenerator();
+        optionsGenerator();
+        startTimer();
+        start.disabled = true;
+    }, {once: true});
+}
 
-
-display.value = newProblem();
-solutionGenerator();
-optionsGenerator();
-startTimer();
-
-
+startGame();
