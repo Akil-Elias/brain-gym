@@ -2,12 +2,14 @@ const display = document.querySelector('#display');
 const optionBts = document.querySelector('#optionBts');
 const message = document.querySelector('#messageBoard');
 const scoreBoard = document.querySelector('#score');
+const highscoreDisplay = document.querySelector('#highscore');
 const start = document.querySelector('#start');
 const operations = ["+", "-", "*"];
 const options = [];
 let problem;
 let solution;
 let score = 0;
+let highscore = 0;
 let totalSeconds = 60;
 let remainingSeconds = totalSeconds;
 let intervalId = null;
@@ -44,6 +46,7 @@ const optionsGenerator = () => {
     for(let opt of options){
         let btn = document.createElement('button');
         btn.innerText = opt;
+        btn.classList.add("btn-glass");
         btn.addEventListener("click", ()=>{
             if(opt === solution){
                 score++;
@@ -84,13 +87,24 @@ const startTimer = () => {
             if (remainingSeconds === 0) {
             clearInterval(intervalId);
             intervalId = null;
+            endGame();
             }
         }, 1000);
     }
 }
 
+const resetGame = () => {
+    score = 0;
+    remainingSeconds = 60;
+    scoreBoard.innerText = score;
+    message.innerText = "Score as much points as possible before the time runs out";
+    updateDisplay();
+};
+
 const startGame = () => {
     start.addEventListener("click", () => {
+        resetGame();
+        removeOptions();
         display.value = newProblem();
         solutionGenerator();
         optionsGenerator();
@@ -99,4 +113,26 @@ const startGame = () => {
     }, {once: true});
 }
 
+const disableOptions = () => {
+    const buttons = optionBts.querySelectorAll('button');
+    buttons.forEach(btn => btn.disabled = true);
+};
+
+const endGame = () => {
+    disableOptions();
+    start.disabled = false;
+    startGame();
+
+    if(score > highscore){
+        highscore = score;
+        highscoreDisplay.innerText = highscore;
+        message.innerText = `Your New High Score is ${highscore}!`;
+        
+    }else{
+        message.innerText = `Your score is ${score}`;
+    }
+    
+}
+
 startGame();
+
